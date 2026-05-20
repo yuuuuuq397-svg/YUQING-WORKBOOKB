@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>camera</title>
+    <style>
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: #000;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.8/lib/p5.min.js"></script>
+  </head>
+  <body>
+    <script>
+      let cam;
+      let crops = [];
+      let lastShuffle = 0;
+
+      function setup() {
+        createCanvas(windowWidth, windowHeight);
+        textFont("monospace");
+        cam = createCapture(VIDEO);
+        cam.size(640, 480);
+        cam.hide();
+        resetCrops();
+      }
+
+      function draw() {
+        background(0);
+
+        if (cam.loadedmetadata) {
+          image(cam, 0, 0, width, height);
+          drawCrops();
+        }
+
+        drawNote();
+      }
+
+      function resetCrops() {
+        crops = [
+          { sx: 70, sy: 50, sw: 150, sh: 115 },
+          { sx: 270, sy: 60, sw: 150, sh: 115 },
+          { sx: 110, sy: 230, sw: 160, sh: 120 },
+          { sx: 330, sy: 220, sw: 160, sh: 120 },
+        ];
+      }
+
+      function drawCrops() {
+        let sizeW = width * 0.22;
+        let sizeH = height * 0.2;
+        let positions = [
+          [width * 0.06, height * 0.18],
+          [width * 0.72, height * 0.16],
+          [width * 0.08, height * 0.62],
+          [width * 0.7, height * 0.62],
+        ];
+
+        for (let i = 0; i < crops.length; i++) {
+          let c = crops[i];
+          let x = positions[i][0];
+          let y = positions[i][1];
+          image(cam, x, y, sizeW, sizeH, c.sx, c.sy, c.sw, c.sh);
+          noFill();
+          stroke(255, 0, 80);
+          strokeWeight(2);
+          rect(x, y, sizeW, sizeH);
+          noStroke();
+          fill(255, 0, 80);
+          textSize(12);
+          text("AI MONITOR " + nf(i + 1, 2), x, y - 18);
+        }
+      }
+
+      function drawNote() {
+        fill(255);
+        noStroke();
+        textSize(14);
+        textStyle(NORMAL);
+        text("In Week 5, I experimented with using the webcam inside p5.js and thought about how camera input changes the relationship between the viewer and the screen. Once the live image appears in the sketch, the work is no longer only something to look at; it also starts to look back. I made this simple AI surveillance system by splitting the camera feed into smaller monitored fragments, like a machine trying to inspect different parts of the same scene. It made me think about computer vision as both playful and uncomfortable, because seeing your own face repeated and watched can quickly become strange.", 26, height - 94, width - 52);
+      }
+
+      function windowResized() {
+        resizeCanvas(windowWidth, windowHeight);
+      }
+    </script>
+  </body>
+</html>

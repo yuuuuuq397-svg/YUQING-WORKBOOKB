@@ -1,0 +1,1190 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yuqing Fei - Portfolio Browser</title>
+    <style>
+:root {
+  --text: #142033;
+  --muted: #667085;
+  --line: #c8d7ea;
+  --blue: #4a9df8;
+  --blue-dark: #2674cf;
+  --blue-soft: #eaf4ff;
+  --desktop: #d8eaff;
+  --white: #ffffff;
+  font-family: Arial, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-width: 1120px;
+  min-height: 100vh;
+  margin: 0;
+  color: var(--text);
+  background: var(--desktop);
+}
+
+button {
+  font: inherit;
+}
+
+.entry-screen {
+  display: grid;
+  min-width: 1120px;
+  min-height: 100vh;
+  place-items: center;
+  background: var(--desktop);
+}
+
+.folder-entry {
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+  padding: 18px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.folder-entry:focus-visible {
+  outline: 2px solid var(--blue-dark);
+  outline-offset: 6px;
+}
+
+.folder-icon {
+  position: relative;
+  display: block;
+  width: 142px;
+  height: 96px;
+  border-radius: 8px;
+  background: linear-gradient(#79c2ff, #3f9bf4);
+  box-shadow: 0 14px 26px rgba(38, 116, 207, 0.18);
+}
+
+.folder-icon::before {
+  content: "";
+  position: absolute;
+  top: -18px;
+  left: 10px;
+  width: 58px;
+  height: 24px;
+  border-radius: 7px 7px 0 0;
+  background: #9bd4ff;
+}
+
+.folder-icon::after {
+  content: "";
+  position: absolute;
+  inset: 34px 0 0;
+  border-radius: 8px;
+  background: linear-gradient(#62b4ff, #2f8ee8);
+}
+
+.folder-label {
+  color: #245f9e;
+  font-size: 15px;
+}
+
+.desktop-shell {
+  display: grid;
+  grid-template-columns: 280px minmax(840px, 1fr);
+  min-width: 1120px;
+  min-height: 100vh;
+  background: var(--desktop);
+}
+
+.hidden {
+  display: none !important;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 34px 26px 24px 34px;
+  background: transparent;
+}
+
+.brand-mark {
+  display: none;
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.1;
+}
+
+.brand p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.catalog {
+  display: grid;
+  gap: 28px;
+}
+
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(20, 32, 51, 0.55);
+  color: var(--muted);
+  cursor: default;
+  font-size: 13px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 32px;
+  gap: 8px;
+  margin: 2px 0;
+  padding: 4px 6px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--text);
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.nav-item:hover,
+.nav-item.active {
+  border-color: transparent;
+  background: transparent;
+}
+
+.stage {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-width: 840px;
+  padding: 34px 34px 24px 0;
+}
+
+.stage-title {
+  color: var(--text);
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.window-layer {
+  position: relative;
+  min-height: 620px;
+}
+
+.intro-note {
+  position: absolute;
+  top: 80px;
+  left: 48%;
+  width: min(620px, 72%);
+  color: #344054;
+  font-size: 17px;
+  line-height: 1.75;
+  transform: translateX(-50%);
+}
+
+.browser-window {
+  position: absolute;
+  top: 56px;
+  left: 48%;
+  width: 760px;
+  height: 520px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--white);
+  box-shadow: 0 18px 36px rgba(43, 91, 145, 0.14);
+  transform: translateX(-50%);
+}
+
+.browser-bar {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-height: 38px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+  background: var(--blue-soft);
+}
+
+.close-window {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid #94a3b8;
+  border-radius: 50%;
+  color: #475569;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 17px;
+}
+
+.close-window:hover {
+  background: #ffffff;
+}
+
+.address {
+  overflow: hidden;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.browser-page {
+  height: calc(520px - 38px);
+  overflow: auto;
+  padding: 30px;
+}
+
+.browser-page.snap-scroll {
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+}
+
+.project-hero {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.project-art {
+  aspect-ratio: 4 / 3;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--blue-soft);
+}
+
+.project-art.atlas {
+  background: #dceeff;
+}
+
+.project-art.notes {
+  background: #eef7ff;
+}
+
+.project-art.motion {
+  background: #cfe7ff;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+h2 {
+  margin: 0 0 10px;
+  font-size: 30px;
+  line-height: 1.1;
+}
+
+.project-hero p:not(.eyebrow),
+.project-grid p,
+.project-grid li {
+  color: #344054;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.project-grid {
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid #edf2f7;
+}
+
+h3 {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+.week-content h2 {
+  margin-top: 0;
+}
+
+.week-content .week-topic {
+  margin: 0 0 22px;
+  color: #142033;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: 0;
+}
+
+.week-content h3 {
+  margin-top: 26px;
+  font-size: 16px;
+}
+
+.week-content h4 {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+.week-content p {
+  color: #344054;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.gesture-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 14px 0 24px;
+}
+
+.gesture-grid div {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.week-image {
+  display: block;
+  width: 100%;
+  max-width: 560px;
+  margin: 18px 0 28px;
+  border: 0;
+  border-radius: 0;
+}
+
+.week-link {
+  color: #142033;
+}
+
+.week-four-intro {
+  min-height: 410px;
+  padding-top: 28px;
+  scroll-snap-align: start;
+}
+
+.scroll-cue {
+  margin: 72px 0 0;
+  color: rgba(20, 32, 51, 0.42);
+  font-size: 24px;
+  text-align: center;
+}
+
+.week-four-options {
+  min-height: 500px;
+  padding-top: 92px;
+  scroll-snap-align: start;
+}
+
+.click-marquee {
+  overflow: hidden;
+  margin: 0 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.click-marquee span {
+  display: inline-block;
+  min-width: 100%;
+  animation: marquee-scroll 10s linear infinite;
+}
+
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.week-options {
+  position: relative;
+  min-height: 230px;
+  width: 100%;
+  margin: -12px 0 18px;
+}
+
+.week-options a,
+.week-options button {
+  padding: 0;
+  border: 0;
+  color: #142033;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  font-size: 84px;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+}
+
+
+.week-options .p5-option {
+  position: absolute;
+  left: 2%;
+  top: 12px;
+}
+
+.week-options .hi-option {
+  position: absolute;
+  left: 39%;
+  top: 82px;
+}
+
+.week-options .face-option {
+  position: absolute;
+  right: 3%;
+  top: 20px;
+}
+
+.week-options .house-option {
+  position: absolute;
+  left: 5%;
+  top: 18px;
+}
+
+.week-options .portrait-option {
+  position: absolute;
+  right: 5%;
+  top: 74px;
+}
+
+.week-options .camera-option {
+  position: absolute;
+  left: 36%;
+  top: 4px;
+}
+
+.week-options .p5-option {
+  color: #ed225d;
+}
+
+.week-options .hi-option {
+  color: rgba(200, 200, 30, 1);
+}
+
+.week-options .face-option {
+  color: #808080;
+}
+
+.week-options-secondary {
+  min-height: 170px;
+  margin-top: -48px;
+}
+
+
+.week-options .house-option {
+  color: skyblue;
+}
+
+.week-options .portrait-option {
+  color: #f2c9a0;
+}
+
+.week-options .camera-option {
+  color: #2b7cff;
+}
+
+ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.physical-list {
+  display: grid;
+  gap: 18px;
+  margin-top: 34px;
+  font-size: 24px;
+}
+
+.physical-list button,
+.physical-list p,
+.arduino-menu button {
+  width: fit-content;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: #142033;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.physical-list p {
+  color: rgba(20, 32, 51, 0.42);
+  cursor: default;
+}
+
+.arduino-menu {
+  display: grid;
+  gap: 20px;
+  margin-top: 38px;
+  font-size: 25px;
+  font-weight: 700;
+}
+
+.physical-figure {
+  margin: 28px 0;
+}
+
+.physical-figure img {
+  display: block;
+  width: 100%;
+  max-width: 660px;
+  border: 0;
+}
+
+.physical-figure.wide img {
+  max-width: 100%;
+}
+
+.physical-figure figcaption {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.physical-gallery {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 22px;
+  margin-top: 26px;
+}
+
+.physical-gallery img {
+  display: block;
+  width: 100%;
+  border: 0;
+}
+
+.blink-layout {
+  display: grid;
+  gap: 22px;
+  margin-top: 28px;
+}
+
+.blink-card {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.95fr) minmax(220px, 1fr);
+  gap: 22px;
+  align-items: start;
+  padding-bottom: 22px;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.blink-card img {
+  display: block;
+  width: 100%;
+  max-height: 250px;
+  object-fit: contain;
+  object-position: left top;
+}
+
+.blink-card h3 {
+  margin-top: 0;
+  font-size: 17px;
+}
+
+.blink-card p {
+  margin: 0;
+  color: #344054;
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.browser-bar {
+  cursor: move;
+  user-select: none;
+}
+
+.close-window {
+  cursor: pointer;
+}
+
+.theremin-section {
+  margin: 30px 0 50px;
+}
+
+.theremin-section h3 {
+  margin: 0 0 12px;
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.theremin-row {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.9fr) minmax(250px, 1fr);
+  gap: 26px;
+  align-items: start;
+}
+
+.theremin-grid-two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+}
+
+.theremin-media {
+  display: block;
+  width: min(100%, 260px);
+  max-height: 330px;
+  object-fit: contain;
+  object-position: left top;
+  background: transparent;
+}
+
+.theremin-media.square {
+  max-height: none;
+}
+
+.ldr-section .theremin-media {
+  width: min(100%, 248px);
+}
+
+.theremin-page p {
+  margin: 0;
+  color: #344054;
+  font-size: 15px;
+  line-height: 1.68;
+}
+
+    </style>
+  </head>
+  <body>
+    <section class="entry-screen" id="entryScreen" aria-label="进入作品集">
+      <button class="folder-entry" id="folderEntry" type="button" aria-label="打开作品集文件夹">
+        <span class="folder-icon" aria-hidden="true"></span>
+        <span class="folder-label">Here</span>
+      </button>
+    </section>
+
+    <main class="desktop-shell hidden" id="portfolioShell">
+      <aside class="sidebar" aria-label="作品集导航">
+        <div class="brand">
+          <span class="brand-mark">YS</span>
+          <div>
+            <h1>Yuqing Fei</h1>
+            <p>Personal Portfolio</p>
+          </div>
+        </div>
+
+        <nav class="catalog" aria-label="项目分类">
+          <section>
+            <div class="section-title">
+              <span>selected work</span>
+              <span>(5)</span>
+            </div>
+            <button class="nav-item" data-project="week1">
+              Wot Is www?
+            </button>
+            <button class="nav-item" data-project="week2">
+              Building for Web
+            </button>
+            <button class="nav-item" data-project="week3">
+              Google Stitch Exploration
+            </button>
+            <button class="nav-item" data-project="week4">
+              Slave to the Algorithm
+            </button>
+            <button class="nav-item" data-project="physical">
+              Physical Computing
+            </button>
+          </section>
+        </nav>
+      </aside>
+
+      <section class="stage" aria-live="polite">
+        <div class="stage-title">Workbook</div>
+
+        <div class="window-layer" id="windowLayer" aria-label="打开的作品页面">
+          <div class="intro-note">
+            This workbook documents how I developed ideas from observation and sketching into layout,
+            interface, visual language, and responsive web design. Rather than only presenting a final
+            result, this site shows my weekly learning process across workshops, class activities, and
+            independent experiments.
+          </div>
+        </div>
+      </section>
+    </main>
+    <script>
+const projects = {
+  week1: {
+    title: "Wot Is www?",
+    customHtml: `
+      <section class="week-content">
+        <p class="week-topic">Week 1</p>
+        <p><strong>I recorded how I interacted with digital and physical interfaces over a 12-hour period. I tracked actions like tapping, scrolling, clicking, and pressing to see how often I use technology in my everyday life, often without even realising it. I then grouped the data into three categories: mobile, computer, and physical interfaces, to better understand my daily behaviour.</strong></p>
+
+        <h3>12-Hour Interface Gesture Study</h3>
+        <div class="gesture-grid">
+          <div>
+            <h4>Mobile</h4>
+            <p>Tap × 328<br>Scroll × 66<br>Swipe × 120</p>
+          </div>
+          <div>
+            <h4>Computer</h4>
+            <p>Click × 146<br>Type × 50<br>Scroll × 38</p>
+          </div>
+          <div>
+            <h4>Physical</h4>
+            <p>Tap Myki × 1<br>Press button × 6<br>Swipe card × 2</p>
+          </div>
+        </div>
+
+        <p><strong>This is my first time learning HTML, and I am excited to create my own web page. I will start by adding some basic elements like headings, paragraphs, and images. I hope to learn more about HTML and CSS to make my web page look even better.</strong></p>
+        <img class="week-image" src="https://yuuuuuq397-svg.github.io/interactive-media/image/pic1.png" alt="Week 1 HTML learning work">
+
+        <p><strong>This week, I watched the film Minority Report. The interface in the film is very visual and interactive. The character controls floating screens using hand gestures instead of a mouse or keyboard. This makes the interaction feel more immersive and intuitive. The system allows the user to move and organise data in a three-dimensional space through physical movement. Although it feels natural, it also requires accuracy and effort.</strong></p>
+        <p><strong>Overall, the film shows a futuristic and engaging way of interacting with technology.</strong></p>
+        <img class="week-image" src="https://yuuuuuq397-svg.github.io/interactive-media/image/pic2.png" alt="Minority Report interface reference">
+
+        <p><strong>I also looked at the JODI website and found its interface very unconventional. The design appears chaotic and broken, with distorted text and minimal visual structure. Unlike traditional websites, it does not guide the user clearly. The interaction is unpredictable, as clicking on elements often leads to unexpected outcomes. This removes a sense of control and encourages exploration in a more experimental way. Rather than focusing on usability, the design creates confusion and curiosity, shaping a different kind of engagement with digital space.</strong></p>
+        <img class="week-image" src="https://yuuuuuq397-svg.github.io/interactive-media/image/pic3.png" alt="JODI website reference">
+      </section>
+    `,
+  },
+  week2: {
+    title: "Building for Web",
+    customHtml: `
+      <section class="week-content">
+        <p class="week-topic">Week 2</p>
+        <p><strong>In this Crazy 8s exercise, I explored different ways to design the layout for my workbook website. I quickly sketched several ideas, trying out different ways to organise text, images, and navigation. Some designs are inspired by a magazine layout, while others feel more like a gallery or a slideshow. This activity helped me think about how a web page can be structured and how users move through the content.</strong></p>
+        <img class="week-image" src="https://yuuuuuq397-svg.github.io/interactive-media/image/pic4.png" alt="Week 2 Crazy 8s workbook layout sketches">
+      </section>
+    `,
+  },
+  week3: {
+    title: "Google Stitch Exploration",
+    customHtml: `
+      <section class="week-content">
+        <p class="week-topic">Week 3</p>
+        <p><strong>This week, our tutor introduced us to Stitch, a new design tool by Google. It is an AI-based interface design tool that allows users to generate website or app layouts by simply entering text prompts, helping designers quickly explore ideas and structure. During the class, we experimented with the tool.</strong></p>
+
+        <p><strong>I entered the prompt “create a website for stray animal adoption, avoiding an overly AI-generated style,” aiming to produce a more natural and human-centred design rather than something that looks generic or overly artificial.</strong></p>
+        <img class="week-image" src="https://yuuuuuq397-svg.github.io/interactive-media/image/pic5.png" alt="Google Stitch stray animal adoption website exploration">
+
+        <p><strong>However, I found that the initial webpage was not very clear in terms of information hierarchy, and it was difficult for users to quickly navigate and find what they needed. I also felt that adopting stray animals is a warm and emotional experience, but the original colour palette of the page felt too cold and lacked this sense of warmth.</strong></p>
+
+        <p><strong>Therefore, I refined my prompt and added: “include a page that categorises cats and dogs to make it easier for users to browse, and adjust the overall colour palette to feel warmer.” I aimed to improve usability through clearer categorisation, while also creating a more emotionally engaging atmosphere through colour. This process made me realise how refining prompts can help guide AI to produce outcomes that better align with my design intentions.</strong></p>
+        <img class="week-image" src="https://yuuuuuq397-svg.github.io/interactive-media/image/pic6.png" alt="Refined Google Stitch website exploration">
+
+        <p><strong>Through using Stitch, I found that it can help me generate ideas more quickly and make the early stage of design easier. However, I also feel that it can limit creativity to some extent, as the results can become quite similar and fall into predictable patterns. So I think it works better as a supporting tool rather than something to rely on completely.</strong></p>
+      </section>
+    `,
+  },
+  week4: {
+    title: "Slave to the Algorithm",
+    hiCode: `let codeText = [
+  'function setup() {',
+  '  createCanvas(windowWidth, windowHeight);',
+  '  background("pink");',
+  '  rectMode(CENTER);',
+  '}',
+  '',
+  'function draw() {',
+  '  background(200, 200, 30, 16);',
+  '  circle(mouseY, mouseX, 120);',
+  '  text("Hi", mouseX, mouseY);',
+  '}'
+];
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  background("pink");
+  rectMode(CENTER);
+}
+
+function draw() {
+  background(200, 200, 30, 16);
+
+  fill(255, 180, 220);
+  stroke(0);
+  circle(mouseY, mouseX, 120);
+
+  fill(0);
+  noStroke();
+  textSize(24);
+  textAlign(CENTER, CENTER);
+  text("Hi", mouseX, mouseY);
+
+  drawCodeText();
+}
+
+function drawCodeText() {
+  let codeX = width * 0.58;
+  let codeY = 60;
+
+  fill(0);
+  noStroke();
+  textAlign(LEFT, TOP);
+  textSize(15);
+  textFont("monospace");
+
+  for (let i = 0; i < codeText.length; i++) {
+    text(codeText[i], codeX, codeY + i * 22);
+  }
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+}`,
+    faceCode: `let codeText = [
+  'function setup() {',
+  '  createCanvas(windowWidth, windowHeight);',
+  '  textSize(60);',
+  '}',
+  '',
+  'function draw() {',
+  '  background(200, 200, 30, 16);',
+  '  text("0_0", mouseX, mouseY);',
+  '  line(width/2, height/2, mouseX, mouseY);',
+  '}'
+];
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  textSize(60);
+}
+
+function draw() {
+  background(200, 200, 30, 16);
+
+  fill(0);
+  stroke(0);
+  textSize(60);
+  text("0_0", mouseX, mouseY);
+  line(width / 2, height / 2, mouseX, mouseY);
+
+  drawCodeText();
+}
+
+function drawCodeText() {
+  let codeX = width * 0.58;
+  let codeY = 60;
+
+  noStroke();
+  fill(0);
+  textAlign(LEFT, TOP);
+  textSize(15);
+  textFont("monospace");
+
+  for (let i = 0; i < codeText.length; i++) {
+    text(codeText[i], codeX, codeY + i * 22);
+  }
+}`,
+    customHtml: `
+      <section class="week-content week-four-content">
+        <div class="week-four-intro">
+          <p class="week-topic">Week 4 &amp; Week 5</p>
+        <p><strong>In Week 4, I was introduced to Processing and p5.js, and began to understand how code can be used as a visual material. I experimented with simple shapes, colour, text, mouse interaction, and repeated drawing to make small interactive sketches.</strong></p>
+
+        <p><strong>In Week 5, we looked at surveillance, computer vision, and some ways of using camera and image input in p5.js sketches. These experiments helped me think about how interaction can move beyond clicking and scrolling, and how live input can become part of a visual system.</strong></p>
+
+          <div class="scroll-cue" aria-hidden="true">↓</div>
+        </div>
+
+        <div class="week-four-options">
+          <div class="click-marquee" aria-hidden="true">
+            <span>click one to explore • click one to explore • click one to explore •</span>
+          </div>
+
+          <div class="week-options" aria-label="Week 4 experiments">
+          <button class="p5-option" type="button" data-open-url="https://p5js.org/">p5.js</button>
+          <button class="hi-option" type="button" data-open-url="hi.html">Hi</button>
+          <button class="face-option" type="button" data-open-url="OO.html">0_0</button>
+        </div>
+
+          <div class="week-options week-options-secondary" aria-label="Week 4 drawing experiments">
+            <button class="house-option" type="button" data-open-url="house.html">house</button>
+            <button class="camera-option" type="button" data-open-url="camera.html">camera</button>
+            <button class="portrait-option" type="button" data-open-url="face.html">face</button>
+          </div>
+        </div>
+      </section>
+    `,
+  },
+
+  physical: {
+    title: "Physical Computing",
+    customHtml: `
+      <section class="week-content">
+        <p class="week-topic">Physical Computing</p>
+        <div class="physical-list">
+          <button type="button" data-open-project="arduinoBasics">Week 6 Arduino Basics</button>
+          <button type="button" data-open-project="theremin">Theremin</button>
+          <p>Week 8</p>
+        </div>
+      </section>
+    `,
+  },
+
+  theremin: {
+    title: "Theremin",
+    customHtml: `
+      <section class="week-content theremin-page">
+        <p class="week-topic">Week 7 Theremin</p>
+
+        <section class="theremin-section ldr-section">
+          <h3>LDR Theremin</h3>
+          <div class="theremin-row">
+            <video class="theremin-media" controls poster="assets/theremin/LDRTheremin.jpg">
+              <source src="assets/theremin/LDRTheremin.mp4" type="video/mp4">
+            </video>
+            <p><strong>For this activity, we explored how a light-dependent resistor can become an input for sound. By covering or exposing the sensor to light, the circuit changes its reading and creates a theremin-like interaction. I found it interesting because the body does not need to press a button; small movements, light, and shadow can become a way of controlling output.</strong></p>
+          </div>
+        </section>
+
+        <section class="theremin-section headspace-section">
+          <h3>Headspace</h3>
+          <div class="theremin-grid-two">
+            <div>
+              <video class="theremin-media square" controls poster="assets/theremin/Headspace.jpg">
+                <source src="assets/theremin/Headspace.mp4" type="video/mp4">
+              </video>
+              <p><strong>For the Headspace, we looked at how ultrasonic sensing could support obstacle awareness. The sensor reads distance and the buzzer gives feedback when something gets too close. I connected this to accessibility because this kind of interaction could help people understand space through sound.</strong></p>
+            </div>
+            <div>
+              <video class="theremin-media square" controls>
+                <source src="assets/theremin/Headspace1.mp4" type="video/mp4">
+              </video>
+              <p><strong>This test shows the interaction more directly. Instead of focusing only on the circuit, I was thinking about how the output could become a warning system, translating distance into a signal that can be heard and felt. I asked my classmate to wear an opaque bag over their head to simulate the experience of being visually impaired. Then I attached the electronic circuit device to the front of the bag. When there is an obstacle in front of them, the device emits an alarm sound to warn them not to continue moving forward. I believe that if this design is further developed and refined, it could be very helpful for visually impaired people.</strong></p>
+            </div>
+          </div>
+        </section>
+
+        <section class="theremin-section fish-section">
+          <h3>Fish Playground</h3>
+          <div class="theremin-row">
+            <video class="theremin-media" controls poster="assets/theremin/FishPlayground.jpg">
+              <source src="assets/theremin/FishPlayground.mp4" type="video/mp4">
+            </video>
+            <p><strong>This sketch uses light and shadow to drive a servo motor. When I tested it, I started imagining it as a small waving toy or character that could be placed in a shop window. When someone walks past the store, the change in light or shadow could trigger the toy to wave and greet them. I like this idea because the circuit becomes something friendly and expressive, rather than only a technical demonstration.</strong></p>
+          </div>
+        </section>
+      </section>
+    `,
+  },
+  arduinoBasics: {
+    title: "Week 6 Arduino Basics",
+    customHtml: `
+      <section class="week-content">
+        <p class="week-topic">Week 6 Arduino Basics</p>
+        <p><strong>This week introduced the basic structure of Arduino and how physical components can connect to code. I began by looking at the Arduino Uno board, identifying parts in the kit, and testing a simple Blink circuit as the first step into physical computing.</strong></p>
+        <div class="arduino-menu">
+          <button type="button" data-open-url-new="https://www.tinkercad.com/projects/Basics-of-Arduino-TINKERCAD">Basics of Arduino (TINKERCAD)</button>
+          <button type="button" data-open-project="arduinoBox">Wot's in the box?</button>
+          <button type="button" data-open-project="arduinoBlink">Blink!</button>
+        </div>
+      </section>
+    `,
+  },
+  arduinoBox: {
+    title: "Wot's in the box?",
+    customHtml: `
+      <section class="week-content">
+        <p><strong>When we first started working with Arduino, our tutor gave us an Arduino Box with many unfamiliar components inside. Before being told what everything was, we tried to guess the parts based on experience, shape, and function. This made the kit feel more exploratory, like learning through observation before technical explanation.</strong></p>
+        <figure class="physical-figure wide">
+          <img src="assets/physical-computing/arduino-kit.jpg" alt="Arduino box components labelled through guessing">
+          <figcaption>Arduino Box Components</figcaption>
+        </figure>
+        <figure class="physical-figure">
+          <img src="assets/physical-computing/arduino-uno-diagram.png" alt="Diagram of Arduino Uno Board">
+          <figcaption>Diagram of Arduino Uno Board</figcaption>
+        </figure>
+      </section>
+    `,
+  },
+  arduinoBlink: {
+    title: "Blink!",
+    customHtml: `
+      <section class="week-content">
+        <p><strong>Blink was the first basic circuit we tried to make. The exercise helped me understand how code can control a physical output. Even though it is a simple LED circuit, it made the connection between software and hardware feel much clearer: changing the code changes what happens in the real world.</strong></p>
+        <div class="blink-layout">
+          <article class="blink-card">
+            <img src="assets/physical-computing/blink-circuit.png" alt="Blink circuit screenshot">
+            <div>
+              <h3>Circuit setup</h3>
+              <p>This screenshot records the basic Blink circuit structure. It helped me understand how the LED connects to the board and how the circuit needs both code and wiring to work.</p>
+            </div>
+          </article>
+          <article class="blink-card">
+            <img src="assets/physical-computing/blink-02.jpg" alt="Blink circuit being built from the diagram">
+            <div>
+              <h3>Building from the circuit</h3>
+              <p>After looking at the circuit diagram, we started placing the LED, resistor, and jumper wires onto the breadboard. This step was about translating the diagram into a real physical layout.</p>
+            </div>
+          </article>
+          <article class="blink-card">
+            <img src="assets/physical-computing/blink-01.jpg" alt="Blink circuit with the LED on">
+            <div>
+              <h3>Testing the LED</h3>
+              <p>After wiring the circuit, we tested the light. Seeing the LED turn on made the connection between code, electricity, and physical output much clearer.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+    `,
+  },
+};
+
+const entryScreen = document.querySelector("#entryScreen");
+const portfolioShell = document.querySelector("#portfolioShell");
+const folderEntry = document.querySelector("#folderEntry");
+const navItems = document.querySelectorAll("[data-project]");
+const windowLayer = document.querySelector("#windowLayer");
+let windowCount = 0;
+
+folderEntry.addEventListener("click", () => {
+  entryScreen.classList.add("hidden");
+  portfolioShell.classList.remove("hidden");
+});
+
+function openProject(id) {
+  const project = projects[id] || projects.week1;
+
+  document.querySelectorAll(".nav-item").forEach((item) => {
+    item.classList.toggle("active", item.dataset.project === id);
+  });
+
+  windowLayer.querySelector(".intro-note")?.remove();
+
+  const browserWindow = document.createElement("article");
+  browserWindow.className = "browser-window";
+  const offset = windowCount % 5;
+  windowCount += 1;
+  browserWindow.style.top = `${56 + offset * 22}px`;
+  browserWindow.style.left = `calc(48% + ${offset * 18}px)`;
+  browserWindow.style.zIndex = String(10 + windowCount);
+  const pageContent = project.customHtml
+    ? project.customHtml
+    : `
+      <div class="project-hero">
+        <div class="project-art ${id}" aria-hidden="true"></div>
+        <div>
+          <p class="eyebrow">${project.type}</p>
+          <h2>${project.title}</h2>
+          <p>${project.intro}</p>
+        </div>
+      </div>
+
+      <div class="project-grid">
+        <section>
+          <h3>about this work</h3>
+          <p>${project.body}</p>
+        </section>
+      </div>
+    `;
+
+  browserWindow.innerHTML = `
+    <header class="browser-bar">
+      <button class="close-window" type="button" aria-label="关闭 ${project.title}">×</button>
+      <div class="address">${project.title}</div>
+    </header>
+
+    <div class="browser-page ${id === "week4" ? "snap-scroll" : ""}">
+      ${pageContent}
+    </div>
+  `;
+
+  browserWindow.querySelector(".close-window").addEventListener("click", () => {
+    browserWindow.remove();
+    if (!windowLayer.querySelector(".browser-window")) {
+      document.querySelectorAll(".nav-item").forEach((item) => item.classList.remove("active"));
+      windowLayer.innerHTML = `
+        <div class="intro-note">
+          This workbook documents how I developed ideas from observation and sketching into layout,
+          interface, visual language, and responsive web design. Rather than only presenting a final
+          result, this site shows my weekly learning process across workshops, class activities, and
+          independent experiments.
+        </div>
+      `;
+    }
+  });
+
+  browserWindow.querySelectorAll("[data-open-url]").forEach((linkButton) => {
+    linkButton.addEventListener("click", () => {
+      window.location.href = linkButton.dataset.openUrl;
+    });
+  });
+
+  browserWindow.querySelectorAll("[data-open-url-new]").forEach((linkButton) => {
+    linkButton.addEventListener("click", () => {
+      window.open(linkButton.dataset.openUrlNew, "_blank", "noopener");
+    });
+  });
+
+  browserWindow.querySelectorAll("[data-open-project]").forEach((projectButton) => {
+    projectButton.addEventListener("click", () => {
+      openProject(projectButton.dataset.openProject);
+    });
+  });
+
+  makeDraggable(browserWindow);
+  windowLayer.append(browserWindow);
+}
+
+function makeDraggable(browserWindow) {
+  const bar = browserWindow.querySelector(".browser-bar");
+
+  bar.addEventListener("pointerdown", (event) => {
+    if (event.target.closest("button")) return;
+
+    const layerRect = windowLayer.getBoundingClientRect();
+    const windowRect = browserWindow.getBoundingClientRect();
+    const startX = event.clientX;
+    const startY = event.clientY;
+    const startLeft = windowRect.left - layerRect.left;
+    const startTop = windowRect.top - layerRect.top;
+
+    windowCount += 1;
+    browserWindow.style.zIndex = String(10 + windowCount);
+    browserWindow.style.transform = "none";
+    browserWindow.style.left = `${startLeft}px`;
+    browserWindow.style.top = `${startTop}px`;
+    bar.setPointerCapture(event.pointerId);
+
+    function moveWindow(moveEvent) {
+      const nextLeft = startLeft + moveEvent.clientX - startX;
+      const nextTop = startTop + moveEvent.clientY - startY;
+      const maxLeft = Math.max(0, layerRect.width - windowRect.width);
+      const maxTop = Math.max(0, layerRect.height - 80);
+
+      browserWindow.style.left = `${Math.min(Math.max(0, nextLeft), maxLeft)}px`;
+      browserWindow.style.top = `${Math.min(Math.max(0, nextTop), maxTop)}px`;
+    }
+
+    function stopMove() {
+      bar.removeEventListener("pointermove", moveWindow);
+      bar.removeEventListener("pointerup", stopMove);
+      bar.removeEventListener("pointercancel", stopMove);
+    }
+
+    bar.addEventListener("pointermove", moveWindow);
+    bar.addEventListener("pointerup", stopMove);
+    bar.addEventListener("pointercancel", stopMove);
+  });
+}
+
+navItems.forEach((item) => {
+  item.addEventListener("click", () => openProject(item.dataset.project));
+});
+
+    </script>
+  </body>
+</html>

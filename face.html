@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>face</title>
+    <style>
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.8/lib/p5.min.js"></script>
+  </head>
+  <body>
+    <script>
+      function setup() {
+        createCanvas(windowWidth, windowHeight);
+        textFont("monospace");
+      }
+
+      function draw() {
+        background("#f3efe6");
+        fill("#f2c9a0");
+        noStroke();
+        ellipse(width / 2, height / 2, 400, 500);
+        fill("#2b2118");
+        arc(width / 2, height / 2 - 130, 400, 260, PI, TWO_PI);
+        fill("black");
+        ellipse(width / 2 - 80, height / 2 - 60, 25, 25);
+        stroke("black");
+        strokeWeight(6);
+        noFill();
+        line(width / 2 + 50, height / 2 - 70, width / 2 + 120, height / 2 - 40);
+        strokeWeight(4);
+        line(width / 2, height / 2 - 20, width / 2 - 30, height / 2 + 80);
+        line(width / 2 - 30, height / 2 + 80, width / 2 + 25, height / 2 + 80);
+        noStroke();
+        fill("#b55245");
+        ellipse(width / 2, height / 2 + 160, 140, 40);
+        fill("#e89c8c");
+        ellipse(width / 2 - 120, height / 2 + 60, 50, 35);
+
+        drawNote("", 'function setup() {\n  createCanvas(windowWidth, windowHeight);\n}\n\nfunction draw() {\n  background("#f3efe6");', 34, 28);
+        drawNote("hair", 'fill("#2b2118");\narc(width / 2, height / 2 - 130, 400, 260, PI, TWO_PI);', 24, height / 2 - 210);
+        drawNote("eye", 'fill("black");\nellipse(width / 2 - 80, height / 2 - 60, 25, 25);', 24, height / 2 - 70);
+        drawNote("cheek", 'fill("#e89c8c");\nellipse(width / 2 - 120, height / 2 + 60, 50, 35);', 24, height / 2 + 110);
+        drawNote("head", 'fill("#f2c9a0");\nnoStroke();\nellipse(width / 2, height / 2, 400, 500);', width / 2 + 245, height / 2 - 255);
+        drawNote("wink", 'stroke("black");\nstrokeWeight(6);\nline(width / 2 + 50, height / 2 - 70, width / 2 + 120, height / 2 - 40);', width / 2 + 270, height / 2 - 75);
+        drawNote("nose", 'strokeWeight(4);\nline(width / 2, height / 2 - 20, width / 2 - 30, height / 2 + 80);\nline(width / 2 - 30, height / 2 + 80, width / 2 + 25, height / 2 + 80);', width / 2 + 260, height / 2 + 55);
+        drawNote("mouth", 'fill("#b55245");\nellipse(width / 2, height / 2 + 160, 140, 40);', width / 2 + 215, height / 2 + 195);
+      }
+
+      function drawNote(title, code, x, y) {
+        fill(0);
+        noStroke();
+        textAlign(LEFT, TOP);
+        textStyle(NORMAL);
+
+        let codeY = y;
+        if (title) {
+          textSize(22);
+          textStyle(BOLD);
+          text(title, x, y);
+          stroke(0);
+          strokeWeight(1);
+          line(x, y + 30, x + 95, y + 30);
+          noStroke();
+          codeY = y + 44;
+        }
+
+        textStyle(NORMAL);
+        textSize(10.5);
+        textLeading(14);
+        text(code, x, codeY, 230);
+      }
+
+      function windowResized() {
+        resizeCanvas(windowWidth, windowHeight);
+      }
+    </script>
+  </body>
+</html>

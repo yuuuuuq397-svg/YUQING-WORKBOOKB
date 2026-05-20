@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yuqing Fei - Portfolio Browser</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <section class="entry-screen" id="entryScreen" aria-label="进入作品集">
+      <button class="folder-entry" id="folderEntry" type="button" aria-label="打开作品集文件夹">
+        <span class="folder-icon" aria-hidden="true"></span>
+        <span class="folder-label">Here</span>
+      </button>
+    </section>
+
+    <main class="desktop-shell hidden" id="portfolioShell">
+      <aside class="sidebar" aria-label="作品集导航">
+        <div class="brand">
+          <span class="brand-mark">YS</span>
+          <div>
+            <h1>Yuqing Fei</h1>
+            <p>Personal Portfolio</p>
+          </div>
+        </div>
+
+        <nav class="catalog" aria-label="项目分类">
+          <section>
+            <div class="section-title">
+              <span>selected work</span>
+              <span>(6)</span>
+            </div>
+            <button class="nav-item" data-project="week1">
+              Wot Is www?
+            </button>
+            <button class="nav-item" data-project="week2">
+              Building for Web
+            </button>
+            <button class="nav-item" data-project="week3">
+              Google Stitch Exploration
+            </button>
+            <button class="nav-item" data-project="week4">
+              Slave to the Algorithm
+            </button>
+            <button class="nav-item" data-project="physical">
+              Physical Computing
+            </button>
+            <button class="nav-item" data-project="designInspiration">
+              Design Inspiration
+            </button>
+          </section>
+        </nav>
+      </aside>
+
+      <section class="stage" aria-live="polite">
+        <div class="stage-title">Workbook</div>
+
+        <div class="window-layer" id="windowLayer" aria-label="打开的作品页面">
+          <div class="intro-note">
+            This workbook documents how I developed ideas from observation and sketching into layout,
+            interface, visual language, and responsive web design. Rather than only presenting a final
+            result, this site shows my weekly learning process across workshops, class activities, and
+            independent experiments.
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

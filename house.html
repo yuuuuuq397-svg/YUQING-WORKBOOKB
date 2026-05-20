@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>house</title>
+    <style>
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.8/lib/p5.min.js"></script>
+  </head>
+  <body>
+    <script>
+      function setup() {
+        createCanvas(windowWidth, windowHeight);
+        textFont("monospace");
+      }
+
+      function draw() {
+        background("skyblue");
+        fill("limegreen");
+        noStroke();
+        rect(0, windowHeight - 300, windowWidth, 300);
+        fill("yellow");
+        noStroke();
+        rect(width / 2 - 150, windowHeight - 600, 300, 300);
+        fill("red");
+        noStroke();
+        triangle(
+          width / 2 - 150, windowHeight - 600,
+          width / 2 + 150, windowHeight - 600,
+          width / 2, windowHeight - 750
+        );
+        fill("brown");
+        rect(width / 2 + 30, windowHeight - 420, 70, 120);
+        fill("lightblue");
+        rect(width / 2 - 110, 230, 60, 60);
+        rect(width / 2 + 50, 230, 60, 60);
+
+        drawNote("", 'function setup() {\n  createCanvas(windowWidth, windowHeight);\n}\n\nfunction draw() {\n  background("skyblue");', 34, 28);
+        drawNote("window", 'fill("lightblue");\nrect(width / 2 - 110, 230, 60, 60);\nrect(width / 2 + 50, 230, 60, 60);', width / 2 - 380, 190);
+        drawNote("door", 'fill("brown");\nrect(width / 2 + 30, windowHeight - 420, 70, 120);', 44, height - 430);
+        drawNote("roof", 'fill("red");\ntriangle(\n  width / 2 - 150, windowHeight - 600,\n  width / 2 + 150, windowHeight - 600,\n  width / 2, windowHeight - 750\n);', width / 2 + 220, height - 710);
+        drawNote("house", 'fill("yellow");\nrect(width / 2 - 150, windowHeight - 600, 300, 300);', width / 2 + 260, height - 500);
+        drawNote("grass", 'fill("limegreen");\nrect(0, windowHeight - 300, windowWidth, 300);', width / 2 - 70, height - 235);
+      }
+
+      function drawNote(title, code, x, y) {
+        fill(0);
+        noStroke();
+        textAlign(LEFT, TOP);
+        textStyle(NORMAL);
+
+        let codeY = y;
+        if (title) {
+          textSize(22);
+          textStyle(BOLD);
+          text(title, x, y);
+          stroke(0);
+          strokeWeight(1);
+          line(x, y + 30, x + 95, y + 30);
+          noStroke();
+          codeY = y + 44;
+        }
+
+        textStyle(NORMAL);
+        textSize(10.5);
+        textLeading(14);
+        text(code, x, codeY);
+      }
+
+      function windowResized() {
+        resizeCanvas(windowWidth, windowHeight);
+      }
+    </script>
+  </body>
+</html>
